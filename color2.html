@@ -89,9 +89,10 @@ try {
         var w = Math.floor(video.videoWidth * s >> 3) << 3,
             h = Math.floor(video.videoHeight * s >> 3) << 3;
         video.style.width = w + 'px'
-        demo_app(Math.max(480, w), Math.max(480, h))
+        // demo_app(Math.max(480, w), Math.max(480, h))
         // demo_app(640, 480)
-
+        demo_app(Math.max(480, w), h)
+        
         compatibility.requestAnimationFrame(tick);
     };
 
