@@ -275,10 +275,8 @@ function evm(){
             filtered.mulLevel(n, 0)
         }else if(currAlpha > alpha){
             filtered.mulLevel(n, alpha)
-            // filtered.mulLevel(n, 0)
         }else{
             filtered.mulLevel(n, currAlpha)
-            // filtered.mulLevel(n, 0)
         }
         lambda = lambda / 2;
     }
