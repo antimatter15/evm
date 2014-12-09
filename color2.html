@@ -5,12 +5,21 @@
 <title>Eulerian Video Magnification</title>
 </head>
 <body>
+<style>
+label {
+    width: 50px;
+}
+</style>
+<label for="exa">exa: </label><input type="range" id="exa" style="width: 700px" min="0" max="5" step="0.01" oninput="updateR12()"><br>
+<label for="alpha">&alpha;: </label><input type="range" id="alpha" style="width: 700px" min="1" max="100" step="0.01" oninput="updateR12()"><br>
+<label for="lambdac">&lambda;c: </label><input type="range" id="lambdac" style="width: 700px" min="1" max="90" step="0.01" oninput="updateR12()"><br>
+<label for="chroma">chr: </label><input type="range" id="chroma" style="width: 700px" min="0" max="10" step="0.01" oninput="updateR12()"><br>
 <label for="r1">r1: </label><input type="range" id="r1" style="width: 700px" min="0" max="1" step="0.01" oninput="updateR12()"><br>
 <label for="r2">r2: </label><input type="range" id="r2" style="width: 700px" min="0" max="1" step="0.01" oninput="updateR12()">
 <br>
-<video id="webcam" width="640" height="480"></video>
-<canvas id="canvas" width="640" height="480"></canvas>
-<canvas id="savnac" width="640" height="480"></canvas>
+<video id="webcam"></video>
+<canvas id="canvas"></canvas>
+<canvas id="savnac"></canvas>
 
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
@@ -36,13 +45,23 @@ var alpha = 10,
     r2 = 0.05, 
     chromAttenuation = 1;
 
+var exaggeration_factor = 2;
+
 document.getElementById('r1').value = r1;
 document.getElementById('r2').value = r2;
+document.getElementById('alpha').value = alpha;
+document.getElementById('lambdac').value = lambda_c;
+document.getElementById('chroma').value = chromAttenuation;
+document.getElementById('exa').value = exaggeration_factor;
 
 
 function updateR12(){
     r1 = +document.getElementById('r1').value;
-    r2 = +document.getElementById('r2').value;    
+    r2 = +document.getElementById('r2').value; 
+    alpha = +document.getElementById('alpha').value;
+    lambda_c = +document.getElementById('lambdac').value;    
+    chromAttenuation = +document.getElementById('chroma').value;    
+    exaggeration_factor = +document.getElementById('exa').value;    
 }
 
 try {
@@ -65,6 +84,13 @@ try {
     };
     var onDimensionsReady = function(width, height) {
         // demo_app(width, height);
+        var s = Math.min(640 / video.videoWidth, 480 / video.videoHeight)
+        // demo_app(640, 480)
+        var w = Math.floor(video.videoWidth * s >> 3) << 3,
+            h = Math.floor(video.videoHeight * s >> 3) << 3;
+        video.style.width = w + 'px'
+        demo_app(w, h)
+
         compatibility.requestAnimationFrame(tick);
     };
 
@@ -80,7 +106,7 @@ try {
             video.play();
         }, 500);
     }, function (error) {
-        video.src = 'face.mp4'
+        video.src = 'baby.mp4'
         video.loop = 'loop'
         video.autoplay = 'autoplay'
 
@@ -90,6 +116,7 @@ try {
 }
 
 var current_frame = 0;
+var frames_processed = 0;
 
 function tick() {
     compatibility.requestAnimationFrame(tick);
@@ -100,12 +127,18 @@ function tick() {
         var s = Math.min(640 / video.videoWidth, 480 / video.videoHeight)
         // var s = 0.01 // call this number for fun times
         ctx.drawImage(video, 0, 0, video.videoWidth * s, video.videoHeight * s)
-
+        
         evm()
+        if(frames_processed == 0){
+            lowpass1.iirFilter(img_pyr, 1);
+            lowpass2.iirFilter(img_pyr, 1);
+        }
+        frames_processed++
+        
     }
 }
 
-demo_app(640, 480)
+// demo_app(640, 480)
 
 onclick = function(){
     lowpass1.iirFilter(img_pyr, 1);

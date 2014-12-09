@@ -1,6 +1,3 @@
-
-
-
 var ctx,canvasWidth,canvasHeight;
 var img_pyr;
 var img_ryp;
@@ -9,15 +6,20 @@ var img_ryp;
 var lowpass1, lowpass2;
 
 function demo_app(videoWidth, videoHeight) {
-    canvasWidth  = canvas.width;
-    canvasHeight = canvas.height;
+    savnac.width = canvas.width = videoWidth
+    savnac.height = canvas.height = videoHeight
+
+    vidWidth = videoWidth
+    vidHeight = videoHeight
+    // canvasWidth  = canvas.width;
+    // canvasHeight = canvas.height;
     ctx = canvas.getContext('2d');
     xtc = savnac.getContext('2d')
 
     ctx.fillStyle = "rgb(0,255,0)";
     ctx.strokeStyle = "rgb(0,255,0)";
 
-    var num_deep = 7;
+    var num_deep = 5;
 
     img_pyr = new color_pyr(videoWidth, videoHeight, num_deep)
     img_ryp = new color_pyr(videoWidth, videoHeight, num_deep)
@@ -163,17 +165,6 @@ color_pyr.prototype.mulLevel = function(n, c){
     mul(this.V);
 }
 
-
-// color_pyr.prototype.addLevel = function(n, source){
-//     function mul(chan, schan){
-//         var d = chan.data[n];
-//         for(var i = 0; i < d.cols * d.rows; i++){ d.data[i] += schan.data[n].data[i]; }
-//     }
-//     mul(this.Y, source.Y);
-//     mul(this.U, source.U);
-//     mul(this.V, source.V);
-// }
-
 function immul(n, chan, schan, c){
     var d = chan.data[n],
         e = schan.data[n];
@@ -225,9 +216,9 @@ color_pyr.prototype.exportLayerRGB = function(layer, dest) {
             var i = y * w + x;
             var Y = Yp[i], U = Up[i], V = Vp[i];
             var n = 4 * (y * dest.width + x);
-            Dd[n] = 127 + Y;
-            Dd[n + 1] = 127 + 4 * U;
-            Dd[n + 2] = 127 + 4 * V;
+            Dd[n] = 127 + 10 * Y;
+            Dd[n + 1] = 127 + 10 * U;
+            Dd[n + 2] = 127 + 10 * V;
             Dd[n + 3] = 255;          
 
         }
@@ -262,7 +253,7 @@ function imsub(a, b){
 var first_frame = true;
 
 function evm(){
-    var imageData = ctx.getImageData(0, 0, 640, 480);
+    var imageData = ctx.getImageData(0, 0, vidWidth, vidHeight);
     img_pyr.fromRGBA(imageData)
 
     img_pyr.pyrDown()
@@ -274,11 +265,6 @@ function evm(){
     filtered.setSubtract(lowpass1, lowpass2);
 
     var delta = lambda_c / 8 / (1+alpha);
-    var exaggeration_factor = 2;
-
-    vidWidth = 640
-    vidHeight = 480
-
     var lambda = Math.sqrt(vidHeight * vidHeight + vidWidth * vidWidth) / 3;
 
     // for(var n = filtered.levels - 1; n >= 0; n--){
@@ -299,11 +285,11 @@ function evm(){
 
     img_ryp.lpyrUp(filtered)
 
-    var blah = ctx.createImageData(640, 480)
+    var blah = ctx.createImageData(vidWidth, vidHeight)
     filtered.toRGBA(blah)
     xtc.putImageData(blah, 0, 0);
 
-    var merp = ctx.createImageData(640, 480)
+    var merp = ctx.createImageData(vidWidth, vidHeight)
     // img_ryp.toRGBA(merp)
     img_pyr.fromRGBA(imageData)
     // img_pyr.addLevel(0, img_ryp)
