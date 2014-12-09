@@ -85,11 +85,12 @@ try {
     var onDimensionsReady = function(width, height) {
         // demo_app(width, height);
         var s = Math.min(640 / video.videoWidth, 480 / video.videoHeight)
-        // demo_app(640, 480)
+        
         var w = Math.floor(video.videoWidth * s >> 3) << 3,
             h = Math.floor(video.videoHeight * s >> 3) << 3;
         video.style.width = w + 'px'
-        demo_app(w, h)
+        demo_app(Math.max(480, w), Math.max(480, h))
+        // demo_app(640, 480)
 
         compatibility.requestAnimationFrame(tick);
     };
@@ -106,7 +107,7 @@ try {
             video.play();
         }, 500);
     }, function (error) {
-        video.src = 'baby.mp4'
+        video.src = 'face.mp4'
         video.loop = 'loop'
         video.autoplay = 'autoplay'
 
