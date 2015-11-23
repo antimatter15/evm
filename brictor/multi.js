@@ -12,7 +12,7 @@ var svg = d3.select("body").append("svg")
 var x = d3.scale.linear().range([0, width]);
 var y = d3.scale.linear().range([height, 0]);
 x.domain([0, 7])
-y.domain([0, 1.5])
+y.domain([0, 1.1])
 
 var xMini = d3.scale.linear().range([0, 200]);
 var yMini = d3.scale.linear().range([0, 200]);
