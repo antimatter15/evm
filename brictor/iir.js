@@ -3,7 +3,7 @@ function Csc(x){ return 1 / Math.sin(x) }
 
 
 function f(x, y, z){
-	return        2*Math.sqrt((Math.pow(y - z, 2)*Math.pow(Math.sin(x/2), 2))/
+	return 2*Math.sqrt((Math.pow(y - z, 2)*Math.pow(Math.sin(x/2), 2))/
 	    ((2 + (-2 + y)*y + 2*(-1 + y)*Math.cos(x))*(2 + (-2 + z)*z + 2*(-1 + z)*Math.cos(x))))
 }
 // the following code wouldn't be necessary if we had cool automatic differnetiation
